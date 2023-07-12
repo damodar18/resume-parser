@@ -1,0 +1,43 @@
+import re
+
+def parse_resume(text):
+  """Parses a resume and returns a dictionary of the information found."""
+  results = {}
+  for match in re.finditer(r"(.*?)\s*:\s*(.*)", text):
+    key, value = match.groups()
+    if key == "Skills":
+      results[key] = value.split(", ")
+    else:
+      results[key] = value
+  return results
+
+def filter_candidates(candidates, requirements):
+  """Filters the candidates according to the job requirements."""
+  qualified_candidates = []
+  for candidate in candidates:
+    if all(requirement in candidate.get("Skills", []) for requirement in requirements):
+      qualified_candidates.append(candidate)
+  return qualified_candidates
+
+def display_qualified_candidates(qualified_candidates):
+    
+  print("Display the qualified candidate details.")
+  print("====================================")
+  for candidate in qualified_candidates:
+    print(f"Name: {candidate['Name']}")
+    print(f"Email: {candidate['Email']}")
+    print(f"Phone: {candidate['Phone']}")
+    print(f"LinkedIn: {candidate['LinkedIn']}")
+    print("Skills:")
+    for skill in candidate["Skills"]:
+      print(f"  {skill}")
+
+if __name__ == "__main__":
+  candidates = [
+      parse_resume("Name: Damodar\nEmail: damodar@example.com\nPhone: 123-456-7890\nLinkedIn: https://www.linkedin.com/in/damodar/\nSkills: Python, Django, AWS"),
+      parse_resume("Name: Yasaswini\nEmail: yasaswini@example.com\nPhone: 456-789-0123\nLinkedIn: https://www.linkedin.com/in/yasaswini/\nSkills: Python, React, CSS"),
+      parse_resume("Name: Dhruthi\nEmail: dhruthi@example.com\nPhone: 789-012-3456\nLinkedIn: https://www.linkedin.com/in/dhruthi/\nSkills: Java, Spring Boot, MySQL"),
+  ]
+  requirements = ["Python", "Django", "AWS"]
+  qualified_candidates = filter_candidates(candidates, requirements)
+  display_qualified_candidates(qualified_candidates)
